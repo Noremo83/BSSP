@@ -1,5 +1,4 @@
 #include<stdio.h>
-#include<time.h>
 #include<unistd.h>
 #include "mytime.h"
 
@@ -11,18 +10,16 @@ int main(){
 	struct timespec ges;
 	ges.tv_sec = 0;
 	ges.tv_nsec = 0;
+	int i = 0;
 	
+	for(i=0;i<5;i++){
 	start = get_cur_time_161314();
-	write_time_161314("StartZeit: ",&start);
-	sleep(5);
-	stop = get_cur_time_161314();	
-	write_time_161314("StopZeit: ",&stop);
-	
+	sleep(2);
+	stop = get_cur_time_161314();
 	diff = get_diff_161314(&start,&stop);
-	write_time_161314("DiffZeit: ",&diff);
-	
+	write_time_161314("Laufzeit: ",&diff);	
 	add_time_161314(&ges,&diff);
-	write_time_161314("geszeit: ",&ges);
-	
-	printf("\n\n");
+	write_time_161314("Gesamt Zeit: ",&ges);	
+	printf("\n");
+	}
 }

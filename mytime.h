@@ -38,8 +38,8 @@ void write_time_161314(const char *msg, const struct timespec *t){
 }
 
 void add_time_161314(struct timespec *summe, const struct timespec *addtime){	
-	summe->tv_sec = summe->tv_sec + addtime->tv_sec;
-	summe->tv_nsec = summe->tv_sec + addtime->tv_nsec;
+	summe->tv_sec += addtime->tv_sec;
+	summe->tv_nsec += addtime->tv_nsec;
 }
 
 
