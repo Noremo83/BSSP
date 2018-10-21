@@ -29,7 +29,7 @@ int main(int argc, char **argv){
 
 	//Kontrolle ob genug Argumente angegeben wurden
 	if (argc <= MIN_REQUIRED){
-		fprintf(stderr,"To less arguments.\nUSAGE:\n    PATH(/etc/....)\nTHRADCOUNT(1-10)\n");
+		fprintf(stderr,"Zu wenig Argumente.\nUSAGE:\n    PATH(/etc/....)\n    THRADCOUNT(1-10)\n");
 		exit(1);
 	}
 
@@ -49,7 +49,7 @@ int main(int argc, char **argv){
 	
 	// Kontrolle ob Directory geöffnet werden konnte
 	if (!dirp){
-		fprintf(stderr,"Could not open Directory!\n");
+		fprintf(stderr,"Konnte Ordner nicht öffnen!\n");
 		exit(1);
 	}
 	
@@ -79,11 +79,7 @@ void *work_161314(void * ptr){
 	while( pthread_mutex_lock(&dirsync), entryp = readdir(p)){
 		pthread_mutex_unlock(&dirsync);	
 		
-		//struct stat is_file;
-		//stat(entryp->d_name, &is_file);
-		//if(S_ISREG(is_file.st_mode)){
 		if(is_regular_file(entryp->d_name)){
-			//printf("FILE: %s MODE: %c",entryp->d_name,is_file.st_mode);
 			//printf("Thread %d, File: %s\n",mynr,entryp->d_name);
 			sleep(rand()%5);
 			mkhash(entryp->d_name);
@@ -92,12 +88,16 @@ void *work_161314(void * ptr){
 	pthread_mutex_unlock(&dirsync);
 	return NULL;
 }
+
 int is_regular_file(const char *path)
 {
 	struct stat path_stat;
 	stat(path, &path_stat);
+	printf("file; %s, stmode %d\n",path,path_stat.st_mode);
 	return S_ISREG(path_stat.st_mode);
 }
+
+
 //Berechnet die vergangene Zeit und speichertsi in struct update
 void calc_time(const struct timespec *start, struct timespec *update){
 	struct timespec tmp_time = {0,0};
@@ -121,7 +121,7 @@ int mkhash(const char *filename){
 	//Öffne Datei
 	struct timespec start_openfile = get_cur_time_161314();
 	int file = open (filename, O_RDONLY);
-	
+	printf("FILE %s, int: %c\n",filename,(int)file);
 	//Start HASH
 	struct timespec start_hash = get_cur_time_161314();
 	while ((bytes = read (file, data, 1024)) != 0)
