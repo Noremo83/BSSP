@@ -21,7 +21,7 @@ struct timespec time_hash = {0,0};
 void *work_161314( void * ptr);
 int mkhash(const char *filename);
 void calc_time(const struct timespec *start, struct timespec *update);
-int is_regular_file(const char *path);
+
 int main(int argc, char **argv){
 	int i = 0;
 	long maxthread = 0;
@@ -63,9 +63,9 @@ int main(int argc, char **argv){
 	}
 
 	//Ausgabe gesamt Zeit
-	fprintf(stderr,"\nGesamt Zeit öffnen Ordners: %lds/%ldns\n",time_opendir.tv_sec,time_opendir.tv_nsec);
+	fprintf(stderr,"Gesamt Zeit öffnen Ordners: %lds/%ldns\n",time_opendir.tv_sec,time_opendir.tv_nsec);
 	fprintf(stderr,"Gesamt Zeit öffnen Files: %lds/%ldns\n",time_openfile.tv_sec,time_openfile.tv_nsec);
-	fprintf(stderr,"Gesamt Zeit berechnen HASH: %lds/%ldns\n\n",time_hash.tv_sec,time_hash.tv_nsec);
+	fprintf(stderr,"Gesamt Zeit berechnen HASH: %lds/%ldns\n",time_hash.tv_sec,time_hash.tv_nsec);
 	return 0;
 	
 }
@@ -77,28 +77,19 @@ void *work_161314(void * ptr){
 	
 	DIR *p = (DIR *)(ptr);
 	while( pthread_mutex_lock(&dirsync), entryp = readdir(p)){
-		pthread_mutex_unlock(&dirsync);	
-		
 		//struct stat is_file;
 		//stat(entryp->d_name, &is_file);
-		//if(S_ISREG(is_file.st_mode)){
-		if(is_regular_file(entryp->d_name)){
-			//printf("FILE: %s MODE: %c",entryp->d_name,is_file.st_mode);
-			//printf("Thread %d, File: %s\n",mynr,entryp->d_name);
+		//if(S_ISREG(is_file.st_mode)){	
+			pthread_mutex_unlock(&dirsync);		
+			//printf("\nThread %d, File: %s\n",mynr,entryp->d_name);
 			sleep(rand()%5);
 			mkhash(entryp->d_name);
-		}
+		//}
 	}
 	pthread_mutex_unlock(&dirsync);
 	return NULL;
 }
-int is_regular_file(const char *path)
-{
-	struct stat path_stat;
-	stat(path, &path_stat);
-	return S_ISREG(path_stat.st_mode);
-}
-//Berechnet die vergangene Zeit und speichertsi in struct update
+
 void calc_time(const struct timespec *start, struct timespec *update){
 	struct timespec tmp_time = {0,0};
 	struct timespec stop = {0,0};
@@ -106,36 +97,34 @@ void calc_time(const struct timespec *start, struct timespec *update){
 	stop = get_cur_time_161314();
 	tmp_time = get_diff_161314(start,&stop);
 	add_time_161314(update,&tmp_time);
+	//write_time_161314("zeit: ",update);
 }
 
 int mkhash(const char *filename){
-	unsigned char *c = malloc(MD5_DIGEST_LENGTH);	
+	unsigned char *c = malloc(MD5_DIGEST_LENGTH);
+	int i;
+
+	MD5_CTX mdContext;
 	int bytes;
 	unsigned char data[1024];
-	
-	int i;
-	//Initialisieren MD5
-	MD5_CTX mdContext;	
-	MD5_Init (&mdContext);
-	
-	//Öffne Datei
+
 	struct timespec start_openfile = get_cur_time_161314();
 	int file = open (filename, O_RDONLY);
 	
-	//Start HASH
 	struct timespec start_hash = get_cur_time_161314();
+	MD5_Init (&mdContext);
+
 	while ((bytes = read (file, data, 1024)) != 0)
 		MD5_Update (&mdContext, data, bytes);
 	
-	//Zeit berechnen und HASH abschließen
 	calc_time(&start_openfile, &time_openfile);
 	MD5_Final (c,&mdContext);
 	calc_time(&start_hash,&time_hash);
-	
-	//Ausgeben des HASH Wertes
+
 	for(i = 0; i < MD5_DIGEST_LENGTH; i++) printf("%02x", c[i]);
-	printf (" %s\n", filename);
 	
+	printf (" %s\n", filename);
+	//fclose (inFile);
 	return 0;
 }
 
