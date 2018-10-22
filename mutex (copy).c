@@ -18,9 +18,13 @@ struct timespec time_opendir = {0,0};
 struct timespec time_openfile = {0,0};
 struct timespec time_hash = {0,0};
 
+
 void *work_161314( void * ptr);
 int mkhash(const char *filename);
 void calc_time(const struct timespec *start, struct timespec *update);
+int is_regular_file(const char *path);
+int is_directory(const char *path);
+
 
 int main(int argc, char **argv){
 	int i = 0;
@@ -29,7 +33,7 @@ int main(int argc, char **argv){
 
 	//Kontrolle ob genug Argumente angegeben wurden
 	if (argc <= MIN_REQUIRED){
-		fprintf(stderr,"To less arguments.\nUSAGE:\n    PATH(/etc/....)\nTHRADCOUNT(1-10)\n");
+		fprintf(stderr,"Zu wenig Argumente.\nUSAGE:\n    PATH(/etc/....)\n    THRADCOUNT(1-10)\n");
 		exit(1);
 	}
 
@@ -49,13 +53,13 @@ int main(int argc, char **argv){
 	
 	// Kontrolle ob Directory geöffnet werden konnte
 	if (!dirp){
-		fprintf(stderr,"Could not open Directory!\n");
+		fprintf(stderr,"Konnte Ordner nicht öffnen!\n");
 		exit(1);
 	}
 	
 	//Erzeugen der Threads
 	for(i=0;i <= maxthread;i++){
-		pthread_create(threadID + i,NULL,work_161314,(void *)(dirp));
+		pthread_create(threadID + i,NULL,work_161314,(void *)(dirp));		
 	}
 	//Syncronisieren
 	for(i=0;i<=maxthread;i++){
@@ -63,9 +67,9 @@ int main(int argc, char **argv){
 	}
 
 	//Ausgabe gesamt Zeit
-	fprintf(stderr,"Gesamt Zeit öffnen Ordners: %lds/%ldns\n",time_opendir.tv_sec,time_opendir.tv_nsec);
+	fprintf(stderr,"\nGesamt Zeit öffnen Ordners: %lds/%ldns\n",time_opendir.tv_sec,time_opendir.tv_nsec);
 	fprintf(stderr,"Gesamt Zeit öffnen Files: %lds/%ldns\n",time_openfile.tv_sec,time_openfile.tv_nsec);
-	fprintf(stderr,"Gesamt Zeit berechnen HASH: %lds/%ldns\n",time_hash.tv_sec,time_hash.tv_nsec);
+	fprintf(stderr,"Gesamt Zeit berechnen HASH: %lds/%ldns\n\n",time_hash.tv_sec,time_hash.tv_nsec);
 	return 0;
 	
 }
@@ -76,20 +80,29 @@ void *work_161314(void * ptr){
 	struct dirent * entryp;
 	
 	DIR *p = (DIR *)(ptr);
+	
 	while( pthread_mutex_lock(&dirsync), entryp = readdir(p)){
-		//struct stat is_file;
-		//stat(entryp->d_name, &is_file);
-		//if(S_ISREG(is_file.st_mode)){	
-			pthread_mutex_unlock(&dirsync);		
-			//printf("\nThread %d, File: %s\n",mynr,entryp->d_name);
+		pthread_mutex_unlock(&dirsync);	
+		
+		if(is_regular_file(entryp->d_name)){
 			sleep(rand()%5);
 			mkhash(entryp->d_name);
-		//}
+		}
+		//else {printf("Not a File: %s\n",entryp->d_name);}
 	}
 	pthread_mutex_unlock(&dirsync);
 	return NULL;
 }
 
+int is_regular_file(const char *path)
+{
+	struct stat path_stat;
+	stat(path, &path_stat);
+	//printf("file; %s, stmode %d\n",path,path_stat.st_mode);
+	return S_ISREG(path_stat.st_mode);
+}
+
+//Berechnet die vergangene Zeit und speichertsi in struct update
 void calc_time(const struct timespec *start, struct timespec *update){
 	struct timespec tmp_time = {0,0};
 	struct timespec stop = {0,0};
@@ -97,34 +110,36 @@ void calc_time(const struct timespec *start, struct timespec *update){
 	stop = get_cur_time_161314();
 	tmp_time = get_diff_161314(start,&stop);
 	add_time_161314(update,&tmp_time);
-	//write_time_161314("zeit: ",update);
 }
 
 int mkhash(const char *filename){
-	unsigned char *c = malloc(MD5_DIGEST_LENGTH);
-	int i;
-
-	MD5_CTX mdContext;
+	unsigned char *c = malloc(MD5_DIGEST_LENGTH);	
 	int bytes;
 	unsigned char data[1024];
-
+	
+	int i;
+	//Initialisieren MD5
+	MD5_CTX mdContext;	
+	MD5_Init (&mdContext);
+	
+	//Öffne Datei
 	struct timespec start_openfile = get_cur_time_161314();
 	int file = open (filename, O_RDONLY);
 	
+	//Start HASH
 	struct timespec start_hash = get_cur_time_161314();
-	MD5_Init (&mdContext);
-
 	while ((bytes = read (file, data, 1024)) != 0)
 		MD5_Update (&mdContext, data, bytes);
 	
+	//Zeit berechnen und HASH abschließen
 	calc_time(&start_openfile, &time_openfile);
 	MD5_Final (c,&mdContext);
 	calc_time(&start_hash,&time_hash);
-
-	for(i = 0; i < MD5_DIGEST_LENGTH; i++) printf("%02x", c[i]);
 	
+	//Ausgeben des HASH Wertes
+	for(i = 0; i < MD5_DIGEST_LENGTH; i++) printf("%02x", c[i]);
 	printf (" %s\n", filename);
-	//fclose (inFile);
+	
 	return 0;
 }
 
