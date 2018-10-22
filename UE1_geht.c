@@ -9,7 +9,6 @@
 #include<sys/stat.h>
 #include "mytime.h"
 #include<time.h>
-#include<string.h>
 
 #define MIN_REQUIRED 2
 
@@ -86,31 +85,13 @@ void *work_161314(void * ptr){
 	DIR *p = (DIR *)(ptr);
 	pthread_mutex_lock(&dirsync);
 		
-	while((entryp = readdir(p)) != NULL){
+	while((entryp = readdir(p))){
 		pthread_mutex_unlock(&dirsync);
+		
 		if(is_regular_file(entryp->d_name)){
 			sleep(rand()%5);
 			mkhash(entryp->d_name);
 		}
-		/*
-		//rekursives abarbeiten 
-		//"Problem ich brauch den Pfad von argv[1] um einen neuerliches opendir machen zu können"
-		//Kontrolle ob entryp typ ein Directory ist
-		else if(entryp->d_type ==DT_DIR)
-		{
-			//Ausschließen von . und ..
-			if (strcmp(entryp->d_name, ".") != 0 && strcmp(entryp->d_name, "..") != 0){				
-				//Subdir anlegen und aufmachen dafür brauche ich den argv_Pfad
-				DIR *subdir;
-				subdir = opendir(entryp->d_name);
-				if (!subdir){
-				fprintf(stderr,"Konnte UnterOrdner nicht öffnen!\n");
-					//exit(1);
-				work_161314((void *)(subdir));
-				}
-				
-			}			
-		}*/
 		pthread_mutex_lock(&dirsync);
 	}
 	pthread_mutex_unlock(&dirsync);
