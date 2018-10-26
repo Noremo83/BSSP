@@ -19,7 +19,9 @@ pthread_mutex_t get_time = PTHREAD_MUTEX_INITIALIZER;
 struct timespec time_opendir = {0,0};
 struct timespec time_openfile = {0,0};
 struct timespec time_hash = {0,0};
+struct timespec time_all = {0,0};
 
+char *path;
 
 void *work_161314( void * ptr);
 void mkhash(const char *filename);
@@ -48,9 +50,12 @@ int main(int argc, char **argv){
 	DIR *dirp;
 	pthread_t threadID[maxthread];
 	
+	path = argv[1];
 	// Öffnen Directory und Zeit messen
 	start = get_cur_time_161314();
-	dirp = opendir(argv[1]);	
+	//char *toopen = "/bin";
+	dirp = opendir(path);
+	printf("Verzeichnis das überpruft wird: %s\n",path);
 	
 	// Kontrolle ob Directory geöffnet werden konnte
 	if (!dirp){
@@ -70,18 +75,21 @@ int main(int argc, char **argv){
 	closedir(dirp);
 	calc_time(&start, &time_opendir);
 	//Ausgabe gesamt Zeit
-	fprintf(stderr,"\nGesamt Zeit öffnen Ordners: %lds/%ldns\n",time_opendir.tv_sec,time_opendir.tv_nsec);
-	fprintf(stderr,"Gesamt Zeit öffnen Files: %lds/%ldns\n",time_openfile.tv_sec,time_openfile.tv_nsec);
-	fprintf(stderr,"Gesamt Zeit berechnen HASH: %lds/%ldns\n\n",time_hash.tv_sec,time_hash.tv_nsec);
+	fprintf(stderr,"\nGesamt Zeit öffnen Ordners: %lds,%ldns\n",time_opendir.tv_sec,time_opendir.tv_nsec);
+	fprintf(stderr,"Gesamt Zeit öffnen Files: %lds,%ldns\n",time_openfile.tv_sec,time_openfile.tv_nsec);
+	fprintf(stderr,"Gesamt Zeit berechnen HASH: %lds,%ldns\n\n",time_hash.tv_sec,time_hash.tv_nsec);
+	
+	add_time_161314(&time_all,&time_opendir);
+	add_time_161314(&time_all,&time_openfile);
+	add_time_161314(&time_all,&time_hash);
+	fprintf(stderr,"Gesamt Zeit: %lds,%ldns\n\n",time_all.tv_sec,time_all.tv_nsec);
 	
 	return 0;
 	
 }
 
 void *work_161314(void * ptr){
-	//static int nr = 0;
-	//int mynr = ++nr;
-	struct dirent * entryp;
+	struct dirent * entryp;	
 	
 	DIR *p = (DIR *)(ptr);
 	pthread_mutex_lock(&dirsync);
@@ -89,26 +97,33 @@ void *work_161314(void * ptr){
 	while((entryp = readdir(p)) != NULL){
 		pthread_mutex_unlock(&dirsync);
 		if(is_regular_file(entryp->d_name)){
+		// (entryp->d_type == DT_DIR){
+			//intf("Is dir\n");
 			sleep(rand()%5);
 			mkhash(entryp->d_name);
 		}
+		
 		/*
 		//rekursives abarbeiten 
 		//"Problem ich brauch den Pfad von argv[1] um einen neuerliches opendir machen zu können"
 		//Kontrolle ob entryp typ ein Directory ist
 		else if(entryp->d_type ==DT_DIR)
 		{
+		struct stat info;
 			//Ausschließen von . und ..
-			if (strcmp(entryp->d_name, ".") != 0 && strcmp(entryp->d_name, "..") != 0){				
-				//Subdir anlegen und aufmachen dafür brauche ich den argv_Pfad
-				DIR *subdir;
-				subdir = opendir(entryp->d_name);
-				if (!subdir){
-				fprintf(stderr,"Konnte UnterOrdner nicht öffnen!\n");
-					//exit(1);
-				work_161314((void *)(subdir));
+			if (strcmp(entryp->d_name, ".") != 0 && strcmp(entryp->d_name, "..") != 0){	
+				char *tmppath = "";
+				strcpy(tmppath, path);
+				strcat(tmppath, "/");
+				strcat(tmppath, entryp->d_name);
+				printf("Subdirectory: %s\n",tmppath);
+				if (stat(tmppath, &info) != 0)
+					fprintf(stderr, "stat() error on %s: %s\n", path,strerror(errno));
+				else if (S_ISDIR(info.st_mode)){				
+					DIR *subdir;
+					subdir = opendir(tmppath);
+					work_161314((void *)(subdir));
 				}
-				
 			}			
 		}*/
 		pthread_mutex_lock(&dirsync);
@@ -116,15 +131,15 @@ void *work_161314(void * ptr){
 	pthread_mutex_unlock(&dirsync);
 	return NULL;
 }
+
 //Kontroll Funktion ob es ein Datei ist
-int is_regular_file(const char *path)
-{
+int is_regular_file(const char *path){
 	struct stat path_stat;
 	stat(path, &path_stat);
 	return S_ISREG(path_stat.st_mode);
 }
 
-//Berechnet die vergangene Zeit und speichertsi in struct update
+//Berechnet die vergangene Zeit und speichert sie in struct update
 void calc_time(const struct timespec *start, struct timespec *update){
 	struct timespec tmp_time = {0,0};
 	struct timespec stop = {0,0};
@@ -141,7 +156,7 @@ void calc_time(const struct timespec *start, struct timespec *update){
 void mkhash(const char *filename){
 	unsigned char *c = malloc(MD5_DIGEST_LENGTH);	
 	int bytes;
-	unsigned char data[10240];
+	unsigned char data[1024];
 	
 	int i;
 	//Initialisieren MD5
@@ -154,7 +169,7 @@ void mkhash(const char *filename){
 	
 	//Start HASH und speichern der Start Zeit
 	struct timespec start_hash = get_cur_time_161314();
-	while ((bytes = read (file, data, 10000)) != 0)
+	while ((bytes = read (file, data, 1024)) != 0)
 		MD5_Update(&mdContext, data, bytes);
 	
 	//Zeit berechnen und HASH abschließen

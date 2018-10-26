@@ -1,0 +1,53 @@
+kolan@ubuntu:~/Documents/BSSP$ ./UE1_1000.out /home/kolan/Documents/BSSP 1
+311e9c61fddf40e58f7ab702ce85bd16 README.md
+0026d8488beada267f632d5e1fc214bb UE1.c
+7b672067f46d880711c37c0979942420 a.out
+2d6f6466e923e6dcbba3cda74ed4900d UE1_10000.out
+eb9e3fe23e01ae363c55d93d698490d0 test.c
+87288aae94ec88143d85a4929bfd18f3 UE1_100.out
+4064bceff5e2b4eb11927a0c36c097df UE1.out
+33675584346a51a7895a2815d3a0b5d7 UE1_1000.out
+89f7f11a9811eea6e81c9ed46e2b41d1 mutex (copy).c
+b74f5f253793f90bdcd15b941b551149 UE1_geht.c
+41e539910b9d84592aa2834f6d2fd85f mytime.h
+dfc03108fb4978e967b9b852cc36c4a1 UE1_10.out
+
+Gesamt Zeit öffnen Ordners: 21s/10840523ns
+Gesamt Zeit öffnen Files: 0s/1472518ns
+Gesamt Zeit berechnen HASH: 0s/1203003ns
+
+kolan@ubuntu:~/Documents/BSSP$ ./UE1_1000.out /home/kolan/Documents/BSSP 2
+0026d8488beada267f632d5e1fc214bb UE1.c
+311e9c61fddf40e58f7ab702ce85bd16 README.md
+7b672067f46d880711c37c0979942420 a.out
+2d6f6466e923e6dcbba3cda74ed4900d UE1_10000.out
+87288aae94ec88143d85a4929bfd18f3 UE1_100.out
+4064bceff5e2b4eb11927a0c36c097df UE1.out
+eb9e3fe23e01ae363c55d93d698490d0 test.c
+33675584346a51a7895a2815d3a0b5d7 UE1_1000.out
+b74f5f253793f90bdcd15b941b551149 UE1_geht.c
+41e539910b9d84592aa2834f6d2fd85f mytime.h
+89f7f11a9811eea6e81c9ed46e2b41d1 mutex (copy).c
+dfc03108fb4978e967b9b852cc36c4a1 UE1_10.out
+
+Gesamt Zeit öffnen Ordners: 11s/5769336ns
+Gesamt Zeit öffnen Files: 0s/1035915ns
+Gesamt Zeit berechnen HASH: 0s/752775ns
+
+kolan@ubuntu:~/Documents/BSSP$ ./UE1_1000.out /home/kolan/Documents/BSSP 4
+2d6f6466e923e6dcbba3cda74ed4900d UE1_10000.out
+0026d8488beada267f632d5e1fc214bb UE1.c
+87288aae94ec88143d85a4929bfd18f3 UE1_100.out
+7b672067f46d880711c37c0979942420 a.out
+4064bceff5e2b4eb11927a0c36c097df UE1.out
+31eb9e3fe23e01ae363c55d93d698490d0 test.c
+1e9c61fddf40e58f7ab702ce85bd16 README.md
+b74f5f253793f90bdcd15b941b551149 UE1_geht.c
+33675584346a51a7895a2815d3a0b5d7 UE1_1000.out
+41e539910b9d84592aa2834f6d2fd85f mytime.h
+89f7f11a9811eea6e81c9ed46e2b41d1 mutex (copy).c
+dfc03108fb4978e967b9b852cc36c4a1 UE1_10.out
+
+Gesamt Zeit öffnen Ordners: 6s/3098434ns
+Gesamt Zeit öffnen Files: 0s/1260169ns
+Gesamt Zeit berechnen HASH: 0s/899231ns
