@@ -1,0 +1,72 @@
+root@ubuntu:/home/kolan/Documents/BSSP# ./UE1_10.out /home/kolan/Documents/BSSP 3
+9482383505e3f45dd7c197b2dbac54d7 UE1.c
+8e95641988c62526a9da143bd9b9669a UE1_10000.out
+fd4f020c1beaaee9b8145436802ea080 a.out
+87288aae94ec88143d85a4929bfd18f3 UE1_100.out
+311e9c61fddf40e58f7ab702ce85bd16 README.md
+57693a84f77424be76c453205e7e687b UE1.out
+196f77851fd71c1494ec093a282c1f1d mutex.c
+33675584346a51a7895a2815d3a0b5d7 UE1_1000.out
+41e539910b9d84592aa2834f6d2fd85f mytime.h
+89f7f11a9811eea6e81c9ed46e2b41d1 mutex (copy).c
+dfc03108fb4978e967b9b852cc36c4a1 UE1_10.out
+
+Gesamt Zeit öffnen Ordners: 7s/16978231ns
+Gesamt Zeit öffnen Files: 0s/18046823ns
+Gesamt Zeit berechnen HASH: 0s/17760704ns
+
+root@ubuntu:/home/kolan/Documents/BSSP# ./UE1_100.out /home/kolan/Documents/BSSP 3
+9482383505e3f45dd7c197b2dbac54d7 UE1.c
+8e95641988c62526a9da143bd9b9669a UE1_10000.out
+fd4f020c1beaaee9b8145436802ea080 a.out
+87288aae94ec88143d85a4929bfd18f3 UE1_100.out
+311e9c61fddf40e58f7ab702ce85bd16 README.md
+57693a84f77424be76c453205e7e687b UE1.out
+196f77851fd71c1494ec093a282c1f1d mutex.c
+33675584346a51a7895a2815d3a0b5d7 UE1_1000.out
+41e539910b9d84592aa2834f6d2fd85f mytime.h
+dfc03108fb4978e967b9b852cc36c4a1 UE1_10.out
+89f7f11a9811eea6e81c9ed46e2b41d1 mutex (copy).c
+
+Gesamt Zeit öffnen Ordners: 7s/8528586ns
+Gesamt Zeit öffnen Files: 0s/2707731ns
+Gesamt Zeit berechnen HASH: 0s/2437772ns
+
+root@ubuntu:/home/kolan/Documents/BSSP# ./UE1_1000.out /home/kolan/Documents/BSSP 3
+9482383505e3f45dd7c197b2dbac54d7 UE1.c
+8e95641988c62526a9da143bd9b9669a UE1_10000.out
+fd4f020c1beaaee9b8145436802ea080 a.out
+87288aae94ec88143d85a4929bfd18f3 UE1_100.out
+311e9c61fddf40e58f7ab702ce85bd16 README.md
+57693a84f77424be76c453205e7e687b UE1.out
+196f77851fd71c1494ec093a282c1f1d mutex.c
+33675584346a51a7895a2815d3a0b5d7 UE1_1000.out
+41e539910b9d84592aa2834f6d2fd85f mytime.h
+dfc03108fb4978e967b9b852cc36c4a1 UE1_10.out
+89f7f11a9811eea6e81c9ed46e2b41d1 mutex (copy).c
+
+Gesamt Zeit öffnen Ordners: 7s/3520593ns
+Gesamt Zeit öffnen Files: 0s/1324129ns
+Gesamt Zeit berechnen HASH: 0s/1036506ns
+
+root@ubuntu:/home/kolan/Documents/BSSP# ./UE1_10000.out /home/kolan/Documents/BSSP 3
+9482383505e3f45dd7c197b2dbac54d7 UE1.c
+Segmentation fault (core dumped)
+
+root@ubuntu:/home/kolan/Documents/BSSP# ./UE1_10000.out /home/kolan/Documents/BSSP 3
+9482383505e3f45dd7c197b2dbac54d7 UE1.c
+022de316f185e217905bd9fb94c2b31e UE1_10000.out
+fd4f020c1beaaee9b8145436802ea080 a.out
+87288aae94ec88143d85a4929bfd18f3 UE1_100.out
+311e9c61fddf40e58f7ab702ce85bd16 README.md
+57693a84f77424be76c453205e7e687b UE1.out
+1694a3ae99b82746bd1c0a3d6fbd608c mutex.c
+33675584346a51a7895a2815d3a0b5d7 UE1_1000.out
+071f8d69aa8a079c735d44d60dc58762 Summary.txt
+89f7f11a9811eea6e81c9ed46e2b41d1 mutex (copy).c
+41e539910b9d84592aa2834f6d2fd85f mytime.h
+dfc03108fb4978e967b9b852cc36c4a1 UE1_10.out
+
+Gesamt Zeit öffnen Ordners: 7s/4885445ns
+Gesamt Zeit öffnen Files: 0s/2452890ns
+Gesamt Zeit berechnen HASH: 0s/2187093ns

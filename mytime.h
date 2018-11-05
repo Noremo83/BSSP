@@ -6,12 +6,15 @@
 
 // gibt die aktuelle Zeit als Wert zurück
 struct timespec get_cur_time_161314();
+
 // gibt den String und die übergebene Zeit aus
 void write_time_161314(const char *msg, const struct timespec *t);
+
 // liefert die Differenz der beiden Zeiten wieder als Zeitobjekt (sec/nanosec)
-struct timespec get_diff_161314(const struct timespec *a, const struct timespec *b);
+struct timespec get_diff_161314(const struct timespec *start, const struct timespec *stop);
+
 // addiert zur Zeit a die Zeit b
-void add_time_161314(struct timespec *start, const struct timespec *stop);
+void add_time_161314(struct timespec *summe, const struct timespec *addtime);
 
 struct timespec get_cur_time_161314(){	
 	struct timespec spec;	
